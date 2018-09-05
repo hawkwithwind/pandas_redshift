@@ -152,7 +152,7 @@ def create_redshift_table(data_frame,
 
 def s3_to_redshift(redshift_table_name, csv_name, delimiter=',', quotechar='"',
                    dateformat='auto', timeformat='auto', region=''):
-    bucket_name = 's3://{0}/{1}.csv'.format(
+    bucket_name = 's3://{0}/{1}'.format(
         s3_bucket_var, s3_subdirectory_var + csv_name)
     
     s3_to_sql = """
