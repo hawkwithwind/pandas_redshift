@@ -218,7 +218,7 @@ def pandas_to_redshift(data_frame,
                               column_data_types, index, append,
                               diststyle, distkey, sort_interleaved, sortkey)
     # CREATE THE COPY STATEMENT TO SEND FROM S3 TO THE TABLE IN REDSHIFT
-    s3_to_redshift(redshift_table_name, delimiter, quotechar, dateformat, timeformat, region)
+    s3_to_redshift(redshift_table_name, csv_name, delimiter, quotechar, dateformat, timeformat, region)
 
 
 
