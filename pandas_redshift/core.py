@@ -6,6 +6,8 @@ import psycopg2
 import boto3
 import sys
 import os
+import uuid
+from datetime import datetime
 
 S3_ACCEPTED_KWARGS = [
     'ACL', 'Body', 'CacheControl ',  'ContentDisposition', 'ContentEncoding', 'ContentLanguage',
@@ -148,11 +150,11 @@ def create_redshift_table(data_frame,
     connect.commit()
 
 
-def s3_to_redshift(redshift_table_name, delimiter=',', quotechar='"',
+def s3_to_redshift(redshift_table_name, csv_name, delimiter=',', quotechar='"',
                    dateformat='auto', timeformat='auto', region=''):
-
     bucket_name = 's3://{0}/{1}.csv'.format(
-                        s3_bucket_var, s3_subdirectory_var + redshift_table_name)
+        s3_bucket_var, s3_subdirectory_var + csv_name)
+    
     s3_to_sql = """
     copy {0}
     from '{1}'
@@ -203,7 +205,10 @@ def pandas_to_redshift(data_frame,
     # Validate column names.
     data_frame = validate_column_names(data_frame)
     # Send data to S3
-    csv_name = redshift_table_name + '.csv'
+    csv_name = '''{fname}-{dt}-{uuid}.csv'''.format(
+        fname=redshift_table_name
+        , dt=datetime.now().strftime('%Y%m%d%H')
+        , uuid=str(uuid.uuid4()))
     s3_kwargs = {k: v for k, v in kwargs.items() if k in S3_ACCEPTED_KWARGS and v is not None}
     df_to_s3(data_frame, csv_name, index, save_local, delimiter, **s3_kwargs)
 
